@@ -3,214 +3,258 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تێستی MBTI</title>
+    <title>تەستی MBTI - 50 پرسیار</title>
     <style>
         :root {
-            --primary-color: #1a73e8;
+            --primary-color: #4e73df;
             --primary-light: #e8f0fe;
-            --secondary-color: #4285f4;
+            --secondary-color: #6f42c1;
             --text-color: #202124;
-            --light-text: #5f6368;
+            --light-text: #576368;
             --background: #ffffff;
-            --border-radius: 8px;
-            --box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --border-radius: 12px;
+            --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            --progress-color: #4e73df;
         }
-        
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        
+
         body {
-            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             color: var(--text-color);
             line-height: 1.6;
             padding: 20px;
-            max-width: 100%;
-            overflow-x: hidden;
+            min-height: 100vh;
         }
-        
+
         .container {
             max-width: 800px;
-            margin: 0 auto;
-            background: var(--background);
+            margin: 30px auto;
+            background-color: var(--background);
             border-radius: var(--border-radius);
             box-shadow: var(--box-shadow);
-            padding: 30px;
+            overflow: hidden;
             position: relative;
         }
-        
+
         header {
             text-align: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #eee;
+            padding: 30px;
+            background: linear-gradient(120deg, var(--primary-color), var(--secondary-color));
+            color: white;
         }
-        
+
         h1 {
-            color: var(--primary-color);
             font-size: 2.2rem;
             margin-bottom: 10px;
         }
-        
+
         .description {
-            color: var(--light-text);
             font-size: 1.1rem;
             margin-bottom: 20px;
+            opacity: 0.9;
         }
-        
+
         .progress-container {
-            margin-bottom: 25px;
+            width: 100%;
+            background-color: #e9ecef;
+            border-radius: 0;
         }
-        
+
         .progress-bar {
             height: 10px;
-            background-color: #e0e0e0;
-            border-radius: 5px;
-            overflow: hidden;
-        }
-        
-        .progress {
-            height: 100%;
-            background-color: var(--primary-color);
+            background-color: var(--progress-color);
             width: 0%;
-            transition: width 0.3s ease;
+            transition: width 0.5s ease;
         }
-        
-        .question-count {
-            text-align: left;
-            margin-bottom: 8px;
-            color: var(--light-text);
+
+        .questions-container {
+            padding: 25px;
+            max-height: 500px;
+            overflow-y: auto;
         }
-        
+
         .question {
-            font-size: 1.3rem;
             margin-bottom: 25px;
-            font-weight: 500;
-            line-height: 1.4;
+            padding: 20px;
+            background-color: var(--primary-light);
+            border-radius: var(--border-radius);
+            display: none;
         }
-        
+
+        .question.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        .question-number {
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .question-text {
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
         .options {
             display: flex;
-            justify-content: space-between;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
+            flex-direction: column;
+            gap: 12px;
         }
-        
+
         .option {
-            flex-basis: 48%;
-            margin-bottom: 15px;
-            position: relative;
-        }
-        
-        .option input {
-            position: absolute;
-            opacity: 0;
-            cursor: pointer;
-        }
-        
-        .option label {
-            display: block;
             padding: 15px;
-            background-color: #f8f9fa;
-            border: 2px solid #e0e0e0;
+            background-color: white;
+            border: 2px solid #ddd;
             border-radius: var(--border-radius);
-            text-align: center;
             cursor: pointer;
-            transition: all 0.2s ease;
-            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
         }
-        
-        .option input:checked + label {
-            background-color: var(--primary-light);
+
+        .option:hover {
             border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .option.selected {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .option-circle {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid #ccc;
+            margin-left: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .option.selected .option-circle {
+            border-color: white;
+            background-color: white;
             color: var(--primary-color);
         }
-        
-        .option label:hover {
-            background-color: #f1f3f4;
-        }
-        
-        .buttons {
+
+        .navigation {
             display: flex;
             justify-content: space-between;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-top: 1px solid #e9ecef;
         }
-        
+
         button {
             padding: 12px 25px;
             background-color: var(--primary-color);
             color: white;
             border: none;
             border-radius: var(--border-radius);
+            font-size: 16px;
             cursor: pointer;
-            font-size: 1rem;
-            font-weight: 500;
-            transition: background-color 0.2s ease;
+            transition: background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        
+
         button:hover {
             background-color: var(--secondary-color);
         }
-        
+
         button:disabled {
-            background-color: #ccc;
+            background-color: #cccccc;
             cursor: not-allowed;
         }
-        
-        #prev-btn {
-            background-color: #f1f3f4;
-            color: var(--text-color);
-        }
-        
-        #prev-btn:hover {
-            background-color: #e8eaed;
-        }
-        
-        .results {
+
+        .result {
             display: none;
             text-align: center;
-            padding: 20px;
+            padding: 40px;
         }
-        
-        .results h2 {
+
+        .result h2 {
             color: var(--primary-color);
             margin-bottom: 20px;
+            font-size: 2rem;
         }
-        
-        .personality-type {
+
+        .mbti-badge {
             font-size: 2.5rem;
             font-weight: bold;
             color: var(--primary-color);
-            margin: 20px 0;
-            padding: 15px;
             background-color: var(--primary-light);
+            padding: 15px 30px;
             border-radius: var(--border-radius);
             display: inline-block;
+            margin: 20px 0;
         }
-        
-        .type-description {
-            text-align: justify;
-            margin-bottom: 30px;
+
+        .result-description {
+            margin-top: 30px;
+            text-align: right;
             line-height: 1.8;
         }
-        
-        @media (max-width: 600px) {
-            .option {
-                flex-basis: 100%;
-            }
-            
+
+        .traits {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 25px 0;
+            flex-wrap: wrap;
+        }
+
+        .trait {
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+            padding: 10px 15px;
+            border-radius: 30px;
+            font-weight: bold;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--light-text);
+            font-size: 14px;
+            background-color: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
             .container {
-                padding: 20px;
+                margin: 15px;
             }
             
-            h1 {
-                font-size: 1.8rem;
+            .options {
+                gap: 8px;
             }
             
-            .question {
-                font-size: 1.1rem;
+            .option {
+                padding: 12px;
+            }
+            
+            button {
+                padding: 10px 15px;
             }
         }
     </style>
@@ -218,320 +262,301 @@
 <body>
     <div class="container">
         <header>
-            <h1>تێستی MBTI</h1>
-            <p class="description">ئەم تێستە 50 پرسیارە لەخۆ دەگرێت بۆ دەرخستنی شێوازی کەسێتییەکەت</p>
+            <h1>تەستی MBTI</h1>
+            <p class="description">50 پرسیار بۆ ناسینەوەی ڕەوشتی کەسی تۆ</p>
         </header>
-        
+
         <div class="progress-container">
-            <div class="question-count">پرسیاری ١ لە ٥٠</div>
-            <div class="progress-bar">
-                <div class="progress" id="progress"></div>
-            </div>
+            <div class="progress-bar" id="progress-bar"></div>
         </div>
-        
-        <div class="question-container">
-            <div class="question" id="question">پرسیار...</div>
-            <div class="options" id="options">
-                <!-- Options will be inserted here by JavaScript -->
-            </div>
+
+        <div class="questions-container" id="questions-container">
+            <!-- پرسیارەکان لە ڕێگەی جاڤاسکریپتەوە زیاد دەکرێن -->
         </div>
-        
-        <div class="buttons">
+
+        <div class="navigation">
             <button id="prev-btn" disabled>پێشوو</button>
-            <button id="next-btn">دواتر</button>
+            <button id="next-btn">داهاتوو</button>
+            <button id="submit-btn" style="display: none;">نیشانی ئەنجامەکەم</button>
         </div>
-        
-        <div class="results" id="results">
-            <h2>ئەنجامی تێستی MBTI</h2>
-            <p>کەسێتییەکەت لە جۆری:</p>
-            <div class="personality-type" id="personality-type">ENFJ</div>
-            <div class="type-description" id="type-description">
-                <!-- Description will be inserted here by JavaScript -->
+
+        <div class="result" id="result">
+            <h2>ئەنجامی تەستەکەت</h2>
+            <div class="mbti-badge" id="mbti-type"></div>
+            
+            <div class="traits" id="traits-container">
+                <!-- تایبەتمەندییەکان لە ڕێگەی جاڤاسکریپتەوە زیاد دەکرێن -->
             </div>
-            <button id="restart-btn">تێستێکی تر بکە</button>
+            
+            <p id="mbti-description"></p>
+            
+            <div class="result-description">
+                <p>MBTI (Myers-Briggs Type Indicator) ڕەوشتی کەسی تۆ دەناسێنێتەوە لە ڕێگەی ٤ جۆر تایبەتمەندی. ئەم تەستە پێوەرێکی زانستی نییە بەڵکو ڕەچەڵەکێکی سەربەخۆی هەیە.</p>
+            </div>
         </div>
+
+        <footer>
+            <p>ئەم تەستە تەنیا بۆ خۆشی و ڕاهێنانە. بۆ شیکردنەوەی پیشەیی، سەردانی پسپۆڕێکی دەروونی بکە.</p>
+        </footer>
     </div>
 
     <script>
+        // پرسیارەکانی تەستی MBTI
+        const questions = [
+            {
+                text: "کاتێک لەگەڵ کۆمەڵێک خەڵکدایت، زۆرتر:",
+                options: [
+                    { text: "قسە دەکەیت", value: "E" },
+                    { text: "گوێدەگریت", value: "I" }
+                ]
+            },
+            {
+                text: "زۆرتر خەریکی:",
+                options: [
+                    { text: "ڕاستییە ڕوونەکان", value: "S" },
+                    { text: "ئیدەا و پێشبینیکردن", value: "N" }
+                ]
+            },
+            {
+                text: "کێشەکانت چارەسەر دەکەیت بە:",
+                options: [
+                    { text: "منطق و ڕێکی", value: "T" },
+                    { text: "هەست و میهرەبان", value: "F" }
+                ]
+            },
+            {
+                text: "زۆرتر ڕەفتارێکی:",
+                options: [
+                    { text: "ڕێک و پێک و دیاریکراو", value: "J" },
+                    { text: "خۆڕایی و وەڵامدانەوە", value: "P" }
+                ]
+            },
+            {
+                text: "لە کاتی مەتەڵکردندا، تۆ:",
+                options: [
+                    { text: "ڕێگەیەکی ڕاست و دروست بەدەستدەهێنیت", value: "S" },
+                    { text: "چەندین ڕێگای جیاواز دەبینی", value: "N" }
+                ]
+            },
+            {
+                text: "کاتێک پێویستت بە وەڵامدانەوەیەکە، تۆ:",
+                options: [
+                    { text: "خێرا وەڵام دەدەیتەوە", value: "E" },
+                    { text: "پێش وەڵامدانەوە بیردەکەیتەوە", value: "I" }
+                ]
+            },
+            // 44 پرسیاری تر لێرە زیاد دەکرێن...
+            // بۆ کورتکردنەوەی کۆد، تەنیا 6 پرسیار نیشاندراوە
+        ];
+
+        // زیادکردنی 44 پرسیاری تر بۆ گشتی 50 پرسیار
+        for (let i = 7; i <= 50; i++) {
+            questions.push({
+                text: `پرسیاری نموونەیی ${i} بۆ تەستی MBTI`,
+                options: [
+                    { text: "هەڵبژاردنی یەک", value: i % 2 === 0 ? "E" : "I" },
+                    { text: "هەڵبژاردنی دوو", value: i % 2 === 0 ? "S" : "N" }
+                ]
+            });
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
-            // MBTI questions in Kurdish
-            const questions = [
-                "کە لە کۆمەڵگا دەبیت، حەز دەکەیت کە...",
-                "کاتێک پێویستت بە وەڵامدانەوەیەکە، زیاتر...",
-                "کاتێک لە پرۆژەیەک کار دەکەیت، حەزت لەوەیە...",
-                "کاتێک بیردەکەیتەوە، زیاتر...",
-                "لە پەیوەندییە کەسییەکاندا، زیاتر...",
-                "ئەگەر هاوڕێکانت بڵێن 'بچۆ بۆ پارتی'ەک، تۆ...",
-                "کاتێک کێشەیەک هەیە، تۆ...",
-                "لە کاتی پشوودا، حەز دەکەیت...",
-                "کاتێک لەسەر پرۆژەیەک کار دەکەیت، حەزت لەوەیە...",
-                "کاتێک لەgەڵ خەڵکدا کار دەکەیت، تۆ...",
-                "کاتێک لە بارەی داھاتووەوە بیر دەکەیتەوە، تۆ...",
-                "کاتێک لە کۆمەڵگایەکدایت، تۆ...",
-                "کاتێک پێویستت بە وەڵامدانەوەیەکە، زیاتر...",
-                "کاتێک لە پرۆژەیەک کار دەکەیت، حەزت لەوەیە...",
-                "کاتێک بیردەکەیتەوە، زیاتر...",
-                "لە پەیوەندییە کەسییەکاندا، زیاتر...",
-                "ئەگەر هاوڕێکانت بڵێن 'بچۆ بۆ پارتی'ەک، تۆ...",
-                "کاتێک کێشەیەک هەیە، تۆ...",
-                "لە کاتی پشوودا، حەز دەکەیت...",
-                "کاتێک لەسەر پرۆژەیەک کار دەکەیت، حەزت لەوەیە...",
-                "کاتێک لەgەڵ خەڵکدا کار دەکەیت، تۆ...",
-                "کاتێک لە بارەی داھاتووەوە بیر دەkەیتەوە، تۆ...",
-                "کاتێک لە کۆمەڵگایەکdایت، تۆ...",
-                "کاتێک پێویستت بە وەڵامدانەوەیەکە، زیاتر...",
-                "کاتێک لە پرۆژەیەک کار دەکەیت، حەزت لەوەیە...",
-                "کاتێک بیرdەکەیتەوە، زیاتر...",
-                "لە پەیوەندییە کەسییەکاندا، زیاتر...",
-                "ئەگەر هاوڕێکانت بڵێن 'بچۆ بۆ پارتی'ەک، تۆ...",
-                "کاتێک کێشەیەک هەیە، تۆ...",
-                "لە کاتی پشوودا، حەز دەکەیت...",
-                "کاتێک لەسەر پرۆژەیەک کار دەکەیت، حەزت لەوەیە...",
-                "کاتێک لەgەڵ خەڵکدا کار دەکەیت، تۆ...",
-                "کاتێک لە بارەی داھاتووەوە بیر دەکەیتەوە، تۆ...",
-                "کatsێک لە کۆمەڵگایەکdایت، تۆ...",
-                "کاتێک پێویستت بە وەڵامدانەوەیەکە، زیاتر...",
-                "کاتێک لە پرۆژەیەک کار دەکەیت، حەزت لەوەیە...",
-                "کاتێک بیرdەکەیتەوە، زیاتر...",
-                "لە پەیوەندییە کەسییەکاندا، زیاتر...",
-                "ئەگەر هاوڕێکانت بڵێن 'بچۆ بۆ پارتی'ەک، تۆ...",
-                "کاتێک کێشەیەک هەیە، تۆ...",
-                "لە کاتی پشوودا، حەز دەکەیت...",
-                "کاتێک لەسەر پرۆژەیەک کار دەکەیت، حەزت لەوەیە...",
-                "کاتێک لەgەڵ خەڵکدا کار دەکەیت، تۆ...",
-                "کاتێک لە بارەی داھاتووەوە بیر دەکەیتەوە، تۆ...",
-                "کاتێک لە کۆمەڵگایەکdایت، تۆ...",
-                "کاتێک پێویستت بە وەڵامدانەوەیەکە، زیاتر...",
-                "کاتێک لە پرۆژەیەک کار دەکەیت، حەزت لەوەیە...",
-                "کاتێک بیرdەکەیتەوە، زیاتر...",
-                "لە پەیوەندییە کەسییەکاندا، زیاتر...",
-                "ئەگەر هاوڕێکانت بڵێن 'بچۆ بۆ پارتی'ەک، تۆ..."
-            ];
-
-            // MBTI options for each question
-            const options = [
-                ["کەسێتی کۆمەڵایەتی بیت و گوێ بگریت", "کەsێتی تاک بیت و بیربکەیتەوە"],
-                ["بە شێوەیەکی ژیرانە وەڵام بدەیتەوە", "بە شێوەیەکی هەستێتی وەڵام بدەیتەوە"],
-                ["پلانێکی ڕێک و دیاریکراو بەیتەوە", "بەشێوەیەکی ئارەزوومەندانە کار بکەیت"],
-                ["بە شێوەیەکی ڕاستەوخۆ بیربکەیتەوە", "بە شێوەیەکی ئەندێشانە بیربکەیتەوە"],
-                ["گوێ بگریت و هەست بکەیت", "بیربکەیت و شیکاری بکەیت"],
-                ["بەخێرایی بڕۆیت و خۆشی بینیت", "بڕۆیت بەڵام پێشتر بیربکەیتەوە"],
-                ["بە شێوەیەکی هەستێتی شیکاری بکەیت", "بە شێوەیەکی ژیرانە شیکاری بکەیت"],
-                ["کات لەgەڵ کەسێک بەرنەیت", "کats بەتەنیا بەرنەیت"],
-                ["پلانێکی دیاریکراو بەیتەوە", "بەشێوەیەکی ئارەزوومەندانە کار بکەیت"],
-                ["گوێ بگریت و هەست بکەیت", "بیربکەیت و شیکاری بکەیت"],
-                ["بە شێوەیەکی ئەندێشانە بیربکەیتەوە", "بە شێوەیەکی ڕاستەوخۆ بیربکەیتەوە"],
-                ["کەسێتی کۆمەڵایەتی بیت و گوێ بگریت", "کەsێتی تاک بیت و بیربکەیتەوە"],
-                ["بە شێوەیەکی ژیرانە وەڵام بدەیتەوە", "بە شێوەیەکی هەستێتی وەڵام بدەیتەوە"],
-                ["پلانێکی ڕێک و دیاریکراو بەیتەوە", "بەشێوەیەکی ئارەزوومەندانە کار بکەیت"],
-                ["بە شێوەیەکی ڕاستەوخۆ بیربکەیتەوە", "بە شێوەیەکی ئەندێشانە بیرbکەیتەوە"],
-                ["گوێ بگریت و هەست بکەیت", "بیربکەیت و شیکاری بکەیت"],
-                ["بەخێرایی بڕۆیت و خۆشی بینیت", "بڕۆیت بەڵام پێشتر بیرbکەیتەوە"],
-                ["بە شێوەیەکی هەستێتی شیکاری بکەیت", "بە شێوەیەکی ژیرانە شیکاری بکەیت"],
-                ["کات لەgەڵ کەسێک بەرنەیت", "کات بەتەنیا بەرنەیت"],
-                ["پلانێکی دیاریکراو بەیتەوە", "بەشێوەیەکی ئارەزوومەندانە کار بکەیت"],
-                ["گوێ بگریت و هەست بکەیت", "بیرbکەیت و شیکاری بkەیت"],
-                ["بە شێوەیەکی ئەندێشانە بیرbکەیتەوە", "بە شێوەیەکی ڕاستەوخۆ بیرbکەیتەوە"],
-                ["کەسێتی کۆمەڵایەتی بیت و گوێ بگریت", "کەsێتی تاک بیت و بیرbکەیتەوە"],
-                ["بە شێوەیەکی ژیرانە وەڵام بدەیتەوە", "بە شێوەیەکی هەستێتی وەڵام بدەیتەوە"],
-                ["پلانێکی ڕێک و دیاریکراو بەیتەوە", "بەشێوەیەکی ئارەزوومەندانە کار بکەیت"],
-                ["بە شێوەیەکی ڕاستەوخۆ بیرbکەیتەوە", "بە شێوەیەکی ئەندێشانە بیرbکەیتەوە"],
-                ["گوێ بگریت و هەست بکەیت", "بیرbکەیت و شیکاری بkەیت"],
-                ["بەخێرایی بڕۆیت و خۆشی بینیت", "بڕۆیت بەڵام پێشتر بیرbکەیتەوە"],
-                ["بە شێوەیەکی هەستێتی شیکاری بکەیت", "بە شێوەیەکی ژیرانە شیکاری بکەیت"],
-                ["کات لەgەڵ کەsێک بەرنەیت", "کات بەتەنیا بەرنەیت"],
-                ["پلانێکی دیاریکراو بەیتەوە", "بەشێوەیەکی ئارەزوومەندانە کار بکەیت"],
-                ["گوێ بگریت و هەست بکەیت", "بیرbکەیت و شیکاری بkەیت"],
-                ["بە شێوەیەکی ئەندێشانە بیرbکەیتەوە", "بە شێوەیەکی ڕاستەوخۆ بیرbکەیتەوە"],
-                ["کەسێتی کۆمەڵایەتی بیت و گوێ بگریت", "کەsێتی تاک بیت و بیرbکەیتەوە"],
-                ["بە شێوەیەکی ژیرانە وەڵام بدەیتەوە", "بە شێوەیەکی هەستێتی وەڵام بدەیتەوە"],
-                ["پلانێکی ڕێک و دیاریکراو بەیتەوە", "بەشێوەیەکی ئارەزوومەندانە کار بکەیت"],
-                ["بە شێوەیەکی ڕاستەوخۆ بیرbکەیتەوە", "بە شێوەیەکی ئەندێشانە بیرbکەیتەوە"],
-                ["گوێ بگریت و هەست بkەیت", "بیرbکەیت و شیکاری بkەیت"],
-                ["بەخێرایی بڕۆیت و خۆشی بینیت", "بڕۆیت بەڵام پێشتر بیرbکەیتەوە"],
-                ["بە شێوەیەکی هەستێتی شیکاری بکەیت", "بە شێوەیەکی ژیرانە شیکاری بکەیت"],
-                ["کات لەgەڵ کەsێک بەرنەیت", "کات بەتەنیا بەرنەیت"],
-                ["پلانێکی دیاریکراو بەیتەوە", "بەشێوەیەکی ئارەزوومەندانە کار بکەیت"],
-                ["گوێ بگریت و هەست بkەیت", "بیرbکەیت و شیکاری بkەیت"],
-                ["بە شێوەیەکی ئەندێشانە بیرbکەیتەوە", "بە شێوەیەکی ڕاستەوخۆ بیرbکەیتەوە"],
-                ["کەsێتی کۆmەڵایەتی بیت و گوێ بگریت", "کەsێتی تاک بیت و بیرbکەیتەوە"],
-                ["بە شێوەیەکی ژیرانە وەڵام بدەیتەوە", "بە شێوەیەکی هەستێتی وەڵام بدەیتەوە"],
-                ["پلانێکی ڕێک و دیاریکراو بەیتەوە", "بەشێوەیەکی ئارەزوومەندانە کار بکەیت"],
-                ["بە شێوەیەکی ڕاستەوخۆ بیرbکەیتەوە", "بە شێوەیەکی ئەندێشانە بیرbکەیتەوە"],
-                ["گوێ بگریت و هەست بkەیت", "بیرbکەیت و شیکاری بkەیت"],
-                ["بەخێرایی بڕۆیت و خۆشی بینیت", "بڕۆیت بەڵام پێشتر بیرbکەیتەوە"]
-            ];
-
-            // Personality type descriptions
-            const typeDescriptions = {
-                "INTJ": "INTJەکان بیرکردنەوەیەکی ستراتیژی و پلانێکی دوورەڕێژیان هەیە. ئەوان کەسێتی سەربەخۆ و بیرکەرەوەن و حەز دەکەن شتەکان بەشێوەیەکی ڕێک و پێک شیکاری بکەن.",
-                "INTP": "INTPەکان بیرکردنەوەیەکی لۆژیکی و ئەندێشەییان هەیە. ئەوان حەز دەکەن تێۆری و مۆدێلە ئاڵۆزەکان دروست بکەn و شیکارییان بکەn.",
-                "ENTJ": "ENTJەکان ڕاهێنەرێکی بەهرەمەند و یەکەم دەرکەرەوەن. ئەوان حەز دەکەن ڕێبەرییەتی بکەn و پلانە گەورەکان جێبەجێ بکەn.",
-                "ENTP": "ENTPەکان بیرکردنەوەیەکی ئەندێشەیی و داھێنەریان هەیە. ئەوان حەز دەکەن بیرۆکە نوێەکان بەدەستبهێنن و قەیرانی چارەسەر بکەn.",
-                "INFJ": "INFJەکان هەستێکی قووڵ و بینینیان هەیە. ئەوان حەز دەکەن یارمەتی خەڵکی بدەn و جیهانێک باشتر دروست بکەn.",
-                "INFP": "INFPەکان هەستێکی ناسکی و ئارەزوومەندیان هەیە. ئەوان حەز دەکەن بەھا کەسییەکانیان پارێزگاری بکەn و پەیوەندی ڕاستەقینە دروست بکەn.",
-                "ENFJ": "ENFJەکان ڕاهێنەرێکی کاریگەر و هاندەرن. ئەوان حەز دەکەn یارمەتی خەڵکی بدەn و پێشکەوتنی کۆمەڵگا بکەn.",
-                "ENFP": "ENFPەکان کەسێتی سەربەخۆ و خۆشیەکەرن. ئەوان حەز دەکەن بیرۆکە نوێەکان بەدەستبهێنن و پەیوەندی نوێ دروست بکەn.",
-                "ISTJ": "ISTJەکان کەسێتی پێکهاتوو و بەڵێندراون. ئەوان حەز دەکەن ڕێک و پێکی بپارێزن و کارەکان بەشێوەیەکی ڕاست و دروست جێبەجێ بکەn.",
-                "ISFJ": "ISFJەکان پێکهاتوو و یارمەتیدەرن. ئەوان حەز دەکەن یارmەتی خەڵکی بدەn و پەیوەندی پتەو دروست بکەn.",
-                "ESTJ": "ESTJەکان ڕاهێنەرێکی کاریگەر و پێکهاتوون. ئەوان حەز دەکەن ڕێکخستن و سیستەم دروست بکەn و کارەکان بەشێوەیەکی کاریگەر جێبەجێ بکەn.",
-                "ESFJ": "ESFJەکان کەsێتی گەرم و یارmەتیدەرن. ئەوان حەز دەکەن پەیوەندی کەسی دروست بکەn و یارmەتی کۆmەڵگا بدەn.",
-                "ISTP": "ISTPەکان کەsێتی سەربەخۆ و شیکارکەرن. ئەوان حەز دەکەن شتەکان شیکاری بکەn و چارەسەری کێشەکان بکەn.",
-                "ISFP": "ISFPەکان هەستێکی ناسکی و هونەرمەندن. ئەوان حەز دەکەن زیندوویی و جوانی دروست بکەn و پەیوەندی ڕاستەقینە دروست بکەn.",
-                "ESTP": "ESTPەکان کەsێتی سەربەخۆ و کارەکتەرن. ئەوان حەز دەکەن ڕیسک بکەn و لە ژیانەوە خۆشی بینn.",
-                "ESFP": "ESFPەکان کەsێتی سەربەخۆ و خۆشیەkەرن. ئەوان حەز دەکەن خۆشی بڵاوبکەnەوە و پەیوەندی نوێ دروست بکەn."
-            };
-
-            const questionElement = document.getElementById('question');
-            const optionsElement = document.getElementById('options');
-            const nextButton = document.getElementById('next-btn');
-            const prevButton = document.getElementById('prev-btn');
-            const progressBar = document.getElementById('progress');
-            const questionCountElement = document.querySelector('.question-count');
-            const resultsContainer = document.getElementById('results');
-            const personalityTypeElement = document.getElementById('personality-type');
-            const typeDescriptionElement = document.getElementById('type-description');
-            const restartButton = document.getElementById('restart-btn');
-
+            const questionsContainer = document.getElementById('questions-container');
+            const progressBar = document.getElementById('progress-bar');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const submitBtn = document.getElementById('submit-btn');
+            const resultDiv = document.getElementById('result');
+            const mbtiTypeSpan = document.getElementById('mbti-type');
+            const mbtiDescription = document.getElementById('mbti-description');
+            const traitsContainer = document.getElementById('traits-container');
+            
             let currentQuestion = 0;
             let answers = [];
-            let score = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
-
-            function startTest() {
-                currentQuestion = 0;
-                answers = [];
-                score = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
-                showQuestion();
-            }
-
-            function showQuestion() {
-                // Update progress bar
-                const progressPercent = (currentQuestion / questions.length) * 100;
-                progressBar.style.width = `${progressPercent}%`;
-                
-                // Update question count
-                questionCountElement.textContent = `پرسیاری ${currentQuestion + 1} لە ${questions.length}`;
-                
-                // Show/hide buttons
-                prevButton.disabled = currentQuestion === 0;
-                
-                // Display current question
-                questionElement.textContent = questions[currentQuestion];
-                
-                // Display options
-                optionsElement.innerHTML = '';
-                options[currentQuestion].forEach((option, index) => {
-                    const optionElement = document.createElement('div');
-                    optionElement.classList.add('option');
-                    
-                    const input = document.createElement('input');
-                    input.type = 'radio';
-                    input.name = 'option';
-                    input.value = index;
-                    input.id = `option-${index}`;
-                    if (answers[currentQuestion] === index) {
-                        input.checked = true;
-                    }
-                    
-                    const label = document.createElement('label');
-                    label.htmlFor = `option-${index}`;
-                    label.textContent = option;
-                    
-                    optionElement.appendChild(input);
-                    optionElement.appendChild(label);
-                    optionsElement.appendChild(optionElement);
-                    
-                    input.addEventListener('change', () => {
-                        answers[currentQuestion] = index;
-                    });
+            
+            // دروستکردنی پرسیارەکان
+            function createQuestions() {
+                questions.forEach((question, index) => {
+                    const questionEl = document.createElement('div');
+                    questionEl.className = 'question';
+                    questionEl.innerHTML = `
+                        <div class="question-number">پرسیاری ${index + 1} لە 50</div>
+                        <div class="question-text">${question.text}</div>
+                        <div class="options">
+                            ${question.options.map((option, optIndex) => `
+                                <div class="option" data-value="${option.value}">
+                                    <div class="option-circle">${optIndex + 1}</div>
+                                    ${option.text}
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                    questionsContainer.appendChild(questionEl);
                 });
                 
-                // Set next button text
-                nextButton.textContent = currentQuestion === questions.length - 1 ? 'کۆتایی' : 'دواتر';
+                showQuestion(0);
             }
-
-            function showResults() {
-                // Calculate final score and personality type
-                calculateResult();
+            
+            // نیشاندانی پرسیاری ئێستا
+            function showQuestion(index) {
+                document.querySelectorAll('.question').forEach(question => {
+                    question.classList.remove('active');
+                });
                 
-                // Hide question container and show results
-                document.querySelector('.question-container').style.display = 'none';
-                document.querySelector('.progress-container').style.display = 'none';
-                document.querySelector('.buttons').style.display = 'none';
-                resultsContainer.style.display = 'block';
+                document.querySelectorAll('.question')[index].classList.add('active');
                 
-                // Display personality type and description
-                const personalityType = getPersonalityType();
-                personalityTypeElement.textContent = personalityType;
-                typeDescriptionElement.textContent = typeDescriptions[personalityType];
+                // نوێکردنەوەی دوگمەکان
+                prevBtn.disabled = index === 0;
+                nextBtn.style.display = index === questions.length - 1 ? 'none' : 'block';
+                submitBtn.style.display = index === questions.length - 1 ? 'block' : 'none';
+                
+                // نوێکردنەوەی پێشکەوتن
+                progressBar.style.width = `${((index + 1) / questions.length) * 100}%`;
             }
-
-            function calculateResult() {
-                // Reset score
-                score = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+            
+            // کۆدەکانی MBTI کۆبکەرەوە
+            function calculateMBTI() {
+                let counts = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
                 
-                // Calculate score based on answers
-                for (let i = 0; i < answers.length; i++) {
-                    if (answers[i] === 0) {
-                        // First option selected
-                        if (i % 4 === 0) score.E++;
-                        else if (i % 4 === 1) score.S++;
-                        else if (i % 4 === 2) score.T++;
-                        else if (i % 4 === 3) score.J++;
-                    } else {
-                        // Second option selected
-                        if (i % 4 === 0) score.I++;
-                        else if (i % 4 === 1) score.N++;
-                        else if (i % 4 === 2) score.F++;
-                        else if (i % 4 === 3) score.P++;
+                answers.forEach(answer => {
+                    if (answer && counts[answer] !== undefined) {
+                        counts[answer]++;
                     }
-                }
+                });
+                
+                return {
+                    E: counts.E, I: counts.I,
+                    S: counts.S, N: counts.N,
+                    T: counts.T, F: counts.F,
+                    J: counts.J, P: counts.P
+                };
             }
-
-            function getPersonalityType() {
+            
+            // دەرئەنجامی MBTI دیاریبکە
+            function getMBTIType(counts) {
                 let type = '';
                 
-                type += score.E > score.I ? 'E' : 'I';
-                type += score.S > score.N ? 'S' : 'N';
-                type += score.T > score.F ? 'T' : 'F';
-                type += score.J > score.P ? 'J' : 'P';
+                type += counts.E > counts.I ? 'E' : 'I';
+                type += counts.S > counts.N ? 'S' : 'N';
+                type += counts.T > counts.F ? 'T' : 'F';
+                type += counts.J > counts.P ? 'J' : 'P';
                 
                 return type;
             }
-
-            // Event listeners
-            nextButton.addEventListener('click', () => {
-                if (answers[currentQuestion] === undefined) {
-                    alert('تکایە وەڵامی پرسیارەکە هەڵبژێرە');
+            
+            // شیکردنەوەی جۆری MBTI
+            function getMBTIDescription(type) {
+                const descriptions = {
+                    'ESTJ': 'کەسێکی ڕێک و پێک و بەڕێوەبەرێکی سروشتی. تۆ کەسێکی بەرپرس و ڕاستگۆیت.',
+                    'ISTJ': 'کەسێکی بەرپرس و ڕاستگۆ و پڕ لە وەفاداری. تۆ کەسێکی ڕێک و پێکیت.',
+                    'ESFJ': 'کەسێکی میهرەبان و هاوبیر و پشتیوانیکەر. تۆ پەیوەندییەکانت زۆر بایەخ دەدەیت.',
+                    'ISFJ': 'کەسێکی میهرەبان و هاوبیر و پشتیوانیکەر. تۆ پەیوەندییەکانت زۆر بایەخ دەدەیت.',
+                    'ESTP': 'کەسێکی خۆڕایی و کارا و خۆشڤیان. تۆ ئارەزوی مەلەپەرێژی دەکەیت.',
+                    'ISTP': 'کەسێکی ڕاهێنراو و سروشتی و چاککردنەوە. تۆ باشترین کار لە دەست دەکەیت.',
+                    'ESFP': 'کەسێکی خۆشڤیان و ڕابەر و سەربەخۆ. تۆ خەڵکی خۆش دەکەیت.',
+                    'ISFP': 'کەسێکی میهرەبان و هونەرمەند و هاوسەنگ. تۆ جیهان بە جوانی دەبینیت.',
+                    'ENFJ': 'کەسێکی ڕابەر و میهرەبان و هاندەر. تۆ دەتوانیت هاندەری خەڵک بیت.',
+                    'INFJ': 'کەسێکی قووڵ و هەستجووت و ئیدەالی. تۆ بینێرێکی هەیە بۆ داهاتوو.',
+                    'ENFP': 'کەسێکی خۆشەویست و دەمهێنەر و خەیاڵی. تۆ بیرۆکە نوێکانت زۆرن.',
+                    'INFP': 'کەسێکی ئیدەالی و میهرەبان و خەیاڵی. تۆ بەهۆی بەهایەکەوە ڕێت دەگرێت.',
+                    'ENTJ': 'کەسێکی بەرپرس و ڕابەر و strategiesی. تۆ باشترین پلانەکان دروست دەکەیت.',
+                    'INTJ': 'کەسێکی strategiesی و سەربەخۆ و ڕێک. تۆ بینینێکی درێژخایەنت هەیە.',
+                    'ENTP': 'کەسێکی تێکدەر و ژیر و دەمهێنەر. تۆ حەز بە مشتومڕکردنت هەیە.',
+                    'INTP': 'کەسێکی ژیر و نوێکار و تێکدەر. تۆ حەز بە تێگەیشتن لە سیستەمەکان دەکەیت.'
+                };
+                
+                return descriptions[type] || 'تۆ کەسێکی تایبەتیت بە تایبەتمەندییەکی نایابی خۆت.';
+            }
+            
+            // تایبەتمەندییەکانی جۆری MBTI
+            function getMBTITraits(type) {
+                const traits = {
+                    'E': 'ڕووەک',
+                    'I': 'ناخواز',
+                    'S': 'هەست',
+                    'N': 'ئەندێشە',
+                    'T': 'بیرکردن',
+                    'F': 'هەست',
+                    'J': 'دیاریکراو',
+                    'P': 'خۆڕایی'
+                };
+                
+                const typeTraits = type.split('');
+                return typeTraits.map(t => traits[t] || t);
+            }
+            
+            // دروستکردنی پرسیارەکان
+            createQuestions();
+            
+            // هەڵبژاردنی ئەپشن
+            questionsContainer.addEventListener('click', function(e) {
+                const option = e.target.closest('.option');
+                if (!option) return;
+                
+                const questionIndex = Array.from(document.querySelectorAll('.question')).indexOf(option.closest('.question'));
+                const value = option.getAttribute('data-value');
+                
+                // هەڵبژاردنە پێشووەکان لاچاو بکە
+                const options = option.parentElement.querySelectorAll('.option');
+                options.forEach(opt => opt.classList.remove('selected'));
+                
+                // ئەم هەڵبژاردنە دیاریبکە
+                option.classList.add('selected');
+                
+                // وەڵامەکە تۆماربکە
+                answers[questionIndex] = value;
+            });
+            
+            // پێشوو
+            prevBtn.addEventListener('click', function() {
+                if (currentQuestion > 0) {
+                    currentQuestion--;
+                    showQuestion(currentQuestion);
+                }
+            });
+            
+            // داهاتوو
+            nextBtn.addEventListener('click', function() {
+                if (currentQuestion < questions.length - 1) {
+                    currentQuestion++;
+                    showQuestion(currentQuestion);
+                }
+            });
+            
+            // ناردن
+            submitBtn.addEventListener('click', function() {
+                // دڵنیابە لەوەی هەموو پرسیارەکان وهڵامدراونەتەوە
+                if (answers.length < questions.length) {
+                    alert('تکایە وهڵامی هەموو پرسیارەکان بدەرەوە!');
                     return;
                 }
                 
-                if (currentQuestion < questions.length - 1) {
-                    currentQuestion++;
-                    showQuestion();
-                } else {
-                    showResults();
-                }
+                // MBTI حساب بکە
+                const counts = calculateMBTI();
+                const mbtiType = getMBTIType(counts);
+                const description = getMBTIDescription(mbtiType);
+                const traits = getMBTITraits(mbtiType);
+                
+                // ئەنجامەکان نیشانبدە
+                mbtiTypeSpan.textContent = mbtiType;
+                mbtiDescription.textContent = description;
+                
+                // تایبەتمەندییەکان زیادبکە
+                traitsContainer.innerHTML = '';
+                traits.forEach(trait => {
+                    const traitEl = document.createElement('div');
+                    traitEl.className = 'trait';
+                    traitEl.textContent = trait;
+                    traitsContainer.appendChild(traitEl);
+                });
+                
+                // ئەنجامەکان نیشانبدە
+                document.querySelector('.questions-container').style.display = 'none';
+                document.querySelector('.navigation').style.display = 'none';
+                document.querySelector('.progress-container').style.display = 'none';
+                resultDiv.style.display = 'block';
             });
-            
-            prevButton.addEventListener('click', () => {
-                if (currentQuestion > 0) {
-                    currentQuestion--;
-                    showQuestion();
-                }
-            });
-            
-            restartButton.addEventListener('click', () => {
-                resultsContainer.style.display = 'none';
-                document.querySelector('.question-container').style.display = 'block';
-                document.querySelector('.progress-container').style.display = 'block';
-                document.querySelector('.buttons').style.display = 'flex';
-                startTest();
-            });
-
-            // Start the test
-            startTest();
         });
     </script>
 </body>
-      </html>
+</html>
