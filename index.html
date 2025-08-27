@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تێستی MBTI</title>
+    <style>
+        :root {
+            --primary-color: #1a73e8;
+            --primary-light: #e8f0fe;
+            --secondary-color: #4285f4;
+            --text-color: #202124;
+            --light-text: #5f6368;
+            --background: #ffffff;
+            --border-radius: 8px;
+            --box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--background);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 30px;
+            position: relative;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .description {
+            color: var(--light-text);
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+        
+        .progress-container {
+            margin-bottom: 25px;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background-color: var(--primary-color);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .question-count {
+            text-align: left;
+            margin-bottom: 8px;
+            color: var(--light-text);
+        }
+        
+        .question {
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+        
+        .options {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .option {
+            flex-basis: 48%;
+            margin-bottom: 15px;
+            position: relative;
+        }
+        
+        .option input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+        }
+        
+        .option label {
+            display: block;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: var(--border-radius);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+        
+        .option input:checked + label {
+            background-color: var(--primary-light);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .option label:hover {
+            background-color: #f1f3f4;
+        }
+        
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        button {
+            padding: 12px 25px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: background-color 0.2s ease;
+        }
+        
+        button:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        
+        #prev-btn {
+            background-color: #f1f3f4;
+            color: var(--text-color);
+        }
+        
+        #prev-btn:hover {
+            background-color: #e8eaed;
+        }
+        
+        .results {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .results h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+        
+        .personality-type {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 20px 0;
+            padding: 15px;
+            background-color: var(--primary-light);
+            border-radius: var(--border-radius);
+            display: inline-block;
+        }
+        
+        .type-description {
+            text-align: justify;
+            margin-bottom: 30px;
+            line-height: 1.8;
+        }
+        
+        @media (max-width: 600px) {
+            .option {
+                flex-basis: 100%;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .question {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>تێستی MBTI</h1>
+            <p class="description">ئەم تێستە 50 پرسیارە لەخۆ دەگرێت بۆ دەرخستنی شێوازی کەسێتییەکەت</p>
+        </header>
+        
+        <div class="progress-container">
+            <div class="question-count">پرسیاری ١ لە ٥٠</div>
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+        </div>
+        
+        <div class="question-container">
+            <div class="question" id="question">پرسیار...</div>
+            <div class="options" id="options">
+                <!-- Options will be inserted here by JavaScript -->
+            </div>
+        </div>
+        
+        <div class="buttons">
+            <button id="prev-btn" disabled>پێشوو</button>
+            <button id="next-btn">دواتر</button>
+        </div>
+        
+        <div class="results" id="results">
+            <h2>ئەنجامی تێستی MBTI</h2>
+            <p>کەسێتییەکەت لە جۆری:</p>
+            <div class="personality-type" id="personality-type">ENFJ</div>
+            <div class="type-description" id="type-description">
+                <!-- Description will be inserted here by JavaScript -->
+            </div>
+            <button id="restart-btn">تێستێکی تر بکە</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // MBTI questions in Kurdish
+            const questions = [
+                "کە لە کۆمەڵگا دەبیت، حەز دەکەیت کە...",
+                "کاتێک پێویستت بە وەڵامدانەوەیەکە، زیاتر...",
+                "کاتێک لە پرۆژەیەک کار دەکەیت، حەزت لەوەیە...",
+                "کاتێک بیردەکەیتەوە، زیاتر...",
+                "لە پەیوەندییە کەسییەکاندا، زیاتر...",
+                "ئەگەر هاوڕێکانت بڵێن 'بچۆ بۆ پارتی'ەک، تۆ...",
+                "کاتێک کێشەیەک هەیە، تۆ...",
+                "لە کاتی پشوودا، حەز دەکەیت...",
+                "کاتێک لەسەر پرۆژەیەک کار دەکەیت، حەزت لەوەیە...",
+                "کاتێک لەgەڵ خەڵکدا کار دەکەیت، تۆ...",
+                "کاتێک لە بارەی داھاتووەوە بیر دەکەیتەوە، تۆ...",
+                "کاتێک لە کۆمەڵگایەکدایت، تۆ...",
+                "کاتێک پێویستت بە وەڵامدانەوەیەکە، زیاتر...",
+                "کاتێک لە پرۆژەیەک کار دەکەیت، حەزت لەوەیە...",
+                "کاتێک بیردەکەیتەوە، زیاتر...",
+                "لە پەیوەندییە کەسییەکاندا، زیاتر...",
+                "ئەگەر هاوڕێکانت بڵێن 'بچۆ بۆ پارتی'ەک، تۆ...",
+                "کاتێک کێشەیەک هەیە، تۆ...",
+                "لە کاتی پشوودا، حەز دەکەیت...",
+                "کاتێک لەسەر پرۆژەیەک کار دەکەیت، حەزت لەوەیە...",
+                "کاتێک لەgەڵ خەڵکدا کار دەکەیت، تۆ...",
+                "کاتێک لە بارەی داھاتووەوە بیر دەkەیتەوە، تۆ...",
+                "کاتێک لە کۆمەڵگایەکdایت، تۆ...",
+                "کاتێک پێویستت بە وەڵامدانەوەیەکە، زیاتر...",
+                "کاتێک لە پرۆژەیەک کار دەکەیت، حەزت لەوەیە...",
+                "کاتێک بیرdەکەیتەوە، زیاتر...",
+                "لە پەیوەندییە کەسییەکاندا، زیاتر...",
+                "ئەگەر هاوڕێکانت بڵێن 'بچۆ بۆ پارتی'ەک، تۆ...",
+                "کاتێک کێشەیەک هەیە، تۆ...",
+                "لە کاتی پشوودا، حەز دەکەیت...",
+                "کاتێک لەسەر پرۆژەیەک کار دەکەیت، حەزت لەوەیە...",
+                "کاتێک لەgەڵ خەڵکدا کار دەکەیت، تۆ...",
+                "کاتێک لە بارەی داھاتووەوە بیر دەکەیتەوە، تۆ...",
+                "کatsێک لە کۆمەڵگایەکdایت، تۆ...",
+                "کاتێک پێویستت بە وەڵامدانەوەیەکە، زیاتر...",
+                "کاتێک لە پرۆژەیەک کار دەکەیت، حەزت لەوەیە...",
+                "کاتێک بیرdەکەیتەوە، زیاتر...",
+                "لە پەیوەندییە کەسییەکاندا، زیاتر...",
+                "ئەگەر هاوڕێکانت بڵێن 'بچۆ بۆ پارتی'ەک، تۆ...",
+                "کاتێک کێشەیەک هەیە، تۆ...",
+                "لە کاتی پشوودا، حەز دەکەیت...",
+                "کاتێک لەسەر پرۆژەیەک کار دەکەیت، حەزت لەوەیە...",
+                "کاتێک لەgەڵ خەڵکدا کار دەکەیت، تۆ...",
+                "کاتێک لە بارەی داھاتووەوە بیر دەکەیتەوە، تۆ...",
+                "کاتێک لە کۆمەڵگایەکdایت، تۆ...",
+                "کاتێک پێویستت بە وەڵامدانەوەیەکە، زیاتر...",
+                "کاتێک لە پرۆژەیەک کار دەکەیت، حەزت لەوەیە...",
+                "کاتێک بیرdەکەیتەوە، زیاتر...",
+                "لە پەیوەندییە کەسییەکاندا، زیاتر...",
+                "ئەگەر هاوڕێکانت بڵێن 'بچۆ بۆ پارتی'ەک، تۆ..."
+            ];
+
+            // MBTI options for each question
+            const options = [
+                ["کەسێتی کۆمەڵایەتی بیت و گوێ بگریت", "کەsێتی تاک بیت و بیربکەیتەوە"],
+                ["بە شێوەیەکی ژیرانە وەڵام بدەیتەوە", "بە شێوەیەکی هەستێتی وەڵام بدەیتەوە"],
+                ["پلانێکی ڕێک و دیاریکراو بەیتەوە", "بەشێوەیەکی ئارەزوومەندانە کار بکەیت"],
+                ["بە شێوەیەکی ڕاستەوخۆ بیربکەیتەوە", "بە شێوەیەکی ئەندێشانە بیربکەیتەوە"],
+                ["گوێ بگریت و هەست بکەیت", "بیربکەیت و شیکاری بکەیت"],
+                ["بەخێرایی بڕۆیت و خۆشی بینیت", "بڕۆیت بەڵام پێشتر بیربکەیتەوە"],
+                ["بە شێوەیەکی هەستێتی شیکاری بکەیت", "بە شێوەیەکی ژیرانە شیکاری بکەیت"],
+                ["کات لەgەڵ کەسێک بەرنەیت", "کats بەتەنیا بەرنەیت"],
+                ["پلانێکی دیاریکراو بەیتەوە", "بەشێوەیەکی ئارەزوومەندانە کار بکەیت"],
+                ["گوێ بگریت و هەست بکەیت", "بیربکەیت و شیکاری بکەیت"],
+                ["بە شێوەیەکی ئەندێشانە بیربکەیتەوە", "بە شێوەیەکی ڕاستەوخۆ بیربکەیتەوە"],
+                ["کەسێتی کۆمەڵایەتی بیت و گوێ بگریت", "کەsێتی تاک بیت و بیربکەیتەوە"],
+                ["بە شێوەیەکی ژیرانە وەڵام بدەیتەوە", "بە شێوەیەکی هەستێتی وەڵام بدەیتەوە"],
+                ["پلانێکی ڕێک و دیاریکراو بەیتەوە", "بەشێوەیەکی ئارەزوومەندانە کار بکەیت"],
+                ["بە شێوەیەکی ڕاستەوخۆ بیربکەیتەوە", "بە شێوەیەکی ئەندێشانە بیرbکەیتەوە"],
+                ["گوێ بگریت و هەست بکەیت", "بیربکەیت و شیکاری بکەیت"],
+                ["بەخێرایی بڕۆیت و خۆشی بینیت", "بڕۆیت بەڵام پێشتر بیرbکەیتەوە"],
+                ["بە شێوەیەکی هەستێتی شیکاری بکەیت", "بە شێوەیەکی ژیرانە شیکاری بکەیت"],
+                ["کات لەgەڵ کەسێک بەرنەیت", "کات بەتەنیا بەرنەیت"],
+                ["پلانێکی دیاریکراو بەیتەوە", "بەشێوەیەکی ئارەزوومەندانە کار بکەیت"],
+                ["گوێ بگریت و هەست بکەیت", "بیرbکەیت و شیکاری بkەیت"],
+                ["بە شێوەیەکی ئەندێشانە بیرbکەیتەوە", "بە شێوەیەکی ڕاستەوخۆ بیرbکەیتەوە"],
+                ["کەسێتی کۆمەڵایەتی بیت و گوێ بگریت", "کەsێتی تاک بیت و بیرbکەیتەوە"],
+                ["بە شێوەیەکی ژیرانە وەڵام بدەیتەوە", "بە شێوەیەکی هەستێتی وەڵام بدەیتەوە"],
+                ["پلانێکی ڕێک و دیاریکراو بەیتەوە", "بەشێوەیەکی ئارەزوومەندانە کار بکەیت"],
+                ["بە شێوەیەکی ڕاستەوخۆ بیرbکەیتەوە", "بە شێوەیەکی ئەندێشانە بیرbکەیتەوە"],
+                ["گوێ بگریت و هەست بکەیت", "بیرbکەیت و شیکاری بkەیت"],
+                ["بەخێرایی بڕۆیت و خۆشی بینیت", "بڕۆیت بەڵام پێشتر بیرbکەیتەوە"],
+                ["بە شێوەیەکی هەستێتی شیکاری بکەیت", "بە شێوەیەکی ژیرانە شیکاری بکەیت"],
+                ["کات لەgەڵ کەsێک بەرنەیت", "کات بەتەنیا بەرنەیت"],
+                ["پلانێکی دیاریکراو بەیتەوە", "بەشێوەیەکی ئارەزوومەندانە کار بکەیت"],
+                ["گوێ بگریت و هەست بکەیت", "بیرbکەیت و شیکاری بkەیت"],
+                ["بە شێوەیەکی ئەندێشانە بیرbکەیتەوە", "بە شێوەیەکی ڕاستەوخۆ بیرbکەیتەوە"],
+                ["کەسێتی کۆمەڵایەتی بیت و گوێ بگریت", "کەsێتی تاک بیت و بیرbکەیتەوە"],
+                ["بە شێوەیەکی ژیرانە وەڵام بدەیتەوە", "بە شێوەیەکی هەستێتی وەڵام بدەیتەوە"],
+                ["پلانێکی ڕێک و دیاریکراو بەیتەوە", "بەشێوەیەکی ئارەزوومەندانە کار بکەیت"],
+                ["بە شێوەیەکی ڕاستەوخۆ بیرbکەیتەوە", "بە شێوەیەکی ئەندێشانە بیرbکەیتەوە"],
+                ["گوێ بگریت و هەست بkەیت", "بیرbکەیت و شیکاری بkەیت"],
+                ["بەخێرایی بڕۆیت و خۆشی بینیت", "بڕۆیت بەڵام پێشتر بیرbکەیتەوە"],
+                ["بە شێوەیەکی هەستێتی شیکاری بکەیت", "بە شێوەیەکی ژیرانە شیکاری بکەیت"],
+                ["کات لەgەڵ کەsێک بەرنەیت", "کات بەتەنیا بەرنەیت"],
+                ["پلانێکی دیاریکراو بەیتەوە", "بەشێوەیەکی ئارەزوومەندانە کار بکەیت"],
+                ["گوێ بگریت و هەست بkەیت", "بیرbکەیت و شیکاری بkەیت"],
+                ["بە شێوەیەکی ئەندێشانە بیرbکەیتەوە", "بە شێوەیەکی ڕاستەوخۆ بیرbکەیتەوە"],
+                ["کەsێتی کۆmەڵایەتی بیت و گوێ بگریت", "کەsێتی تاک بیت و بیرbکەیتەوە"],
+                ["بە شێوەیەکی ژیرانە وەڵام بدەیتەوە", "بە شێوەیەکی هەستێتی وەڵام بدەیتەوە"],
+                ["پلانێکی ڕێک و دیاریکراو بەیتەوە", "بەشێوەیەکی ئارەزوومەندانە کار بکەیت"],
+                ["بە شێوەیەکی ڕاستەوخۆ بیرbکەیتەوە", "بە شێوەیەکی ئەندێشانە بیرbکەیتەوە"],
+                ["گوێ بگریت و هەست بkەیت", "بیرbکەیت و شیکاری بkەیت"],
+                ["بەخێرایی بڕۆیت و خۆشی بینیت", "بڕۆیت بەڵام پێشتر بیرbکەیتەوە"]
+            ];
+
+            // Personality type descriptions
+            const typeDescriptions = {
+                "INTJ": "INTJەکان بیرکردنەوەیەکی ستراتیژی و پلانێکی دوورەڕێژیان هەیە. ئەوان کەسێتی سەربەخۆ و بیرکەرەوەن و حەز دەکەن شتەکان بەشێوەیەکی ڕێک و پێک شیکاری بکەن.",
+                "INTP": "INTPەکان بیرکردنەوەیەکی لۆژیکی و ئەندێشەییان هەیە. ئەوان حەز دەکەن تێۆری و مۆدێلە ئاڵۆزەکان دروست بکەn و شیکارییان بکەn.",
+                "ENTJ": "ENTJەکان ڕاهێنەرێکی بەهرەمەند و یەکەم دەرکەرەوەن. ئەوان حەز دەکەن ڕێبەرییەتی بکەn و پلانە گەورەکان جێبەجێ بکەn.",
+                "ENTP": "ENTPەکان بیرکردنەوەیەکی ئەندێشەیی و داھێنەریان هەیە. ئەوان حەز دەکەن بیرۆکە نوێەکان بەدەستبهێنن و قەیرانی چارەسەر بکەn.",
+                "INFJ": "INFJەکان هەستێکی قووڵ و بینینیان هەیە. ئەوان حەز دەکەن یارمەتی خەڵکی بدەn و جیهانێک باشتر دروست بکەn.",
+                "INFP": "INFPەکان هەستێکی ناسکی و ئارەزوومەندیان هەیە. ئەوان حەز دەکەن بەھا کەسییەکانیان پارێزگاری بکەn و پەیوەندی ڕاستەقینە دروست بکەn.",
+                "ENFJ": "ENFJەکان ڕاهێنەرێکی کاریگەر و هاندەرن. ئەوان حەز دەکەn یارمەتی خەڵکی بدەn و پێشکەوتنی کۆمەڵگا بکەn.",
+                "ENFP": "ENFPەکان کەسێتی سەربەخۆ و خۆشیەکەرن. ئەوان حەز دەکەن بیرۆکە نوێەکان بەدەستبهێنن و پەیوەندی نوێ دروست بکەn.",
+                "ISTJ": "ISTJەکان کەسێتی پێکهاتوو و بەڵێندراون. ئەوان حەز دەکەن ڕێک و پێکی بپارێزن و کارەکان بەشێوەیەکی ڕاست و دروست جێبەجێ بکەn.",
+                "ISFJ": "ISFJەکان پێکهاتوو و یارمەتیدەرن. ئەوان حەز دەکەن یارmەتی خەڵکی بدەn و پەیوەندی پتەو دروست بکەn.",
+                "ESTJ": "ESTJەکان ڕاهێنەرێکی کاریگەر و پێکهاتوون. ئەوان حەز دەکەن ڕێکخستن و سیستەم دروست بکەn و کارەکان بەشێوەیەکی کاریگەر جێبەجێ بکەn.",
+                "ESFJ": "ESFJەکان کەsێتی گەرم و یارmەتیدەرن. ئەوان حەز دەکەن پەیوەندی کەسی دروست بکەn و یارmەتی کۆmەڵگا بدەn.",
+                "ISTP": "ISTPەکان کەsێتی سەربەخۆ و شیکارکەرن. ئەوان حەز دەکەن شتەکان شیکاری بکەn و چارەسەری کێشەکان بکەn.",
+                "ISFP": "ISFPەکان هەستێکی ناسکی و هونەرمەندن. ئەوان حەز دەکەن زیندوویی و جوانی دروست بکەn و پەیوەندی ڕاستەقینە دروست بکەn.",
+                "ESTP": "ESTPەکان کەsێتی سەربەخۆ و کارەکتەرن. ئەوان حەز دەکەن ڕیسک بکەn و لە ژیانەوە خۆشی بینn.",
+                "ESFP": "ESFPەکان کەsێتی سەربەخۆ و خۆشیەkەرن. ئەوان حەز دەکەن خۆشی بڵاوبکەnەوە و پەیوەندی نوێ دروست بکەn."
+            };
+
+            const questionElement = document.getElementById('question');
+            const optionsElement = document.getElementById('options');
+            const nextButton = document.getElementById('next-btn');
+            const prevButton = document.getElementById('prev-btn');
+            const progressBar = document.getElementById('progress');
+            const questionCountElement = document.querySelector('.question-count');
+            const resultsContainer = document.getElementById('results');
+            const personalityTypeElement = document.getElementById('personality-type');
+            const typeDescriptionElement = document.getElementById('type-description');
+            const restartButton = document.getElementById('restart-btn');
+
+            let currentQuestion = 0;
+            let answers = [];
+            let score = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+
+            function startTest() {
+                currentQuestion = 0;
+                answers = [];
+                score = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+                showQuestion();
+            }
+
+            function showQuestion() {
+                // Update progress bar
+                const progressPercent = (currentQuestion / questions.length) * 100;
+                progressBar.style.width = `${progressPercent}%`;
+                
+                // Update question count
+                questionCountElement.textContent = `پرسیاری ${currentQuestion + 1} لە ${questions.length}`;
+                
+                // Show/hide buttons
+                prevButton.disabled = currentQuestion === 0;
+                
+                // Display current question
+                questionElement.textContent = questions[currentQuestion];
+                
+                // Display options
+                optionsElement.innerHTML = '';
+                options[currentQuestion].forEach((option, index) => {
+                    const optionElement = document.createElement('div');
+                    optionElement.classList.add('option');
+                    
+                    const input = document.createElement('input');
+                    input.type = 'radio';
+                    input.name = 'option';
+                    input.value = index;
+                    input.id = `option-${index}`;
+                    if (answers[currentQuestion] === index) {
+                        input.checked = true;
+                    }
+                    
+                    const label = document.createElement('label');
+                    label.htmlFor = `option-${index}`;
+                    label.textContent = option;
+                    
+                    optionElement.appendChild(input);
+                    optionElement.appendChild(label);
+                    optionsElement.appendChild(optionElement);
+                    
+                    input.addEventListener('change', () => {
+                        answers[currentQuestion] = index;
+                    });
+                });
+                
+                // Set next button text
+                nextButton.textContent = currentQuestion === questions.length - 1 ? 'کۆتایی' : 'دواتر';
+            }
+
+            function showResults() {
+                // Calculate final score and personality type
+                calculateResult();
+                
+                // Hide question container and show results
+                document.querySelector('.question-container').style.display = 'none';
+                document.querySelector('.progress-container').style.display = 'none';
+                document.querySelector('.buttons').style.display = 'none';
+                resultsContainer.style.display = 'block';
+                
+                // Display personality type and description
+                const personalityType = getPersonalityType();
+                personalityTypeElement.textContent = personalityType;
+                typeDescriptionElement.textContent = typeDescriptions[personalityType];
+            }
+
+            function calculateResult() {
+                // Reset score
+                score = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+                
+                // Calculate score based on answers
+                for (let i = 0; i < answers.length; i++) {
+                    if (answers[i] === 0) {
+                        // First option selected
+                        if (i % 4 === 0) score.E++;
+                        else if (i % 4 === 1) score.S++;
+                        else if (i % 4 === 2) score.T++;
+                        else if (i % 4 === 3) score.J++;
+                    } else {
+                        // Second option selected
+                        if (i % 4 === 0) score.I++;
+                        else if (i % 4 === 1) score.N++;
+                        else if (i % 4 === 2) score.F++;
+                        else if (i % 4 === 3) score.P++;
+                    }
+                }
+            }
+
+            function getPersonalityType() {
+                let type = '';
+                
+                type += score.E > score.I ? 'E' : 'I';
+                type += score.S > score.N ? 'S' : 'N';
+                type += score.T > score.F ? 'T' : 'F';
+                type += score.J > score.P ? 'J' : 'P';
+                
+                return type;
+            }
+
+            // Event listeners
+            nextButton.addEventListener('click', () => {
+                if (answers[currentQuestion] === undefined) {
+                    alert('تکایە وەڵامی پرسیارەکە هەڵبژێرە');
+                    return;
+                }
+                
+                if (currentQuestion < questions.length - 1) {
+                    currentQuestion++;
+                    showQuestion();
+                } else {
+                    showResults();
+                }
+            });
+            
+            prevButton.addEventListener('click', () => {
+                if (currentQuestion > 0) {
+                    currentQuestion--;
+                    showQuestion();
+                }
+            });
+            
+            restartButton.addEventListener('click', () => {
+                resultsContainer.style.display = 'none';
+                document.querySelector('.question-container').style.display = 'block';
+                document.querySelector('.progress-container').style.display = 'block';
+                document.querySelector('.buttons').style.display = 'flex';
+                startTest();
+            });
+
+            // Start the test
+            startTest();
+        });
+    </script>
+</body>
+      </html>
