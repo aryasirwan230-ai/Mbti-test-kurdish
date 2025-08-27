@@ -107,12 +107,13 @@
         .options {
             display: flex;
             justify-content: center;
-            gap: 20px;
+            gap: 15px;
             margin-top: 20px;
+            flex-wrap: wrap;
         }
 
         .option {
-            padding: 12px 25px;
+            padding: 12px 20px;
             background-color: white;
             border: 2px solid #ddd;
             border-radius: var(--border-radius);
@@ -218,6 +219,12 @@
             border-top: 1px solid #e9ecef;
         }
 
+        .creator {
+            margin-top: 10px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -260,7 +267,7 @@
 
         <div class="navigation">
             <button id="prev-btn" disabled>پێشوو</button>
-            <button id="next-btn">داهاتوو</button>
+            <button id="next-btn" disabled>داهاتوو</button>
             <button id="submit-btn" style="display: none;">نیشانی ئەنجامەکەم</button>
         </div>
 
@@ -281,6 +288,7 @@
 
         <footer>
             <p>ئەم تەستە تەنیا بۆ خۆشی و ڕاهێنانە. بۆ شیکردنەوەی پیشەیی، سەردانی پسپۆڕێکی دەروونی بکە.</p>
+            <p class="creator">Creat by Arya sirwan</p>
         </footer>
     </div>
 
@@ -388,7 +396,7 @@
                 direction: 1
             },
             {
-                text: "تۆ حەز دەکەیت کە چالاکییە تەنیاییەکان بکەیت وەک لە چالاکییە کۆمەڵاییەکان.",
+                text: "تۆ حەز دەکەیت کە چالاکییە تەنیاییەکان بکەیت وەک لە چالакیکردنە کۆمەڵاییەکان.",
                 dimension: "EI",
                 direction: -1
             },
@@ -407,7 +415,6 @@
                 dimension: "JP",
                 direction: 1
             },
-            // 36 پرسیاری تر لێرە زیاد دەکرێن...
             {
                 text: "تۆ زۆرتر حەز دەکەیت کە لەگەڵ کۆمەڵێک خەڵکدا بیت.",
                 dimension: "EI",
@@ -509,12 +516,12 @@
                 direction: -1
             },
             {
-                text: "تۆ زۆرتر حەز دەکەیت کە کات بەسەر ببەیت لەگەڵ خێزانەکەتدا.",
+                text: "تۆ زۆرتر حەز دەکەیت کە کات بەسەر ببەیت لەگەڵ خێزانەکەتda.",
                 dimension: "EI",
                 direction: 1
             },
             {
-                text: "تۆ زۆرتر حەز دەکەیت کە شتەکان لە ڕێیەکی دەستڕێگەکراوەوە بڕوا.",
+                text: "تۆ زۆرتر حەz دەکەیت کە شتەکان لە ڕێیەکی دەستڕێگەکراوەوە بڕوا.",
                 dimension: "SN",
                 direction: 1
             },
@@ -529,7 +536,7 @@
                 direction: 1
             },
             {
-                text: "تۆ زۆرتر حەز دەکەیت کە کات بەسەر ببەیت لەگەڵ هاوبیرەکانتدا.",
+                text: "تۆ زۆرتر حەز دەکەیت کە کات بەسەر ببەیت لەگەڵ هاوبیرەکانتda.",
                 dimension: "EI",
                 direction: 1
             },
@@ -549,7 +556,7 @@
                 direction: -1
             },
             {
-                text: "تۆ زۆرتر حەز دەکەیت کە کات بەسەر ببەیت لەگەڵ کۆمەڵێک بیانیەدا.",
+                text: "تۆ زۆرتر حەز دەکەیت کە کات بەسەر ببەیت لەگەڵ کۆمەڵێک بیانیەda.",
                 dimension: "EI",
                 direction: 1
             },
@@ -614,7 +621,8 @@
                         <div class="question-text">${question.text}</div>
                         <div class="options">
                             <div class="option" data-value="1">ڕازیم</div>
-                            <div class="option" data-value="0">نەڕازیم</div>
+                            <div class="option" data-value="0">دڵنیانیم</div>
+                            <div class="option" data-value="-1">نەڕازیم</div>
                         </div>
                     `;
                     questionsContainer.appendChild(questionEl);
@@ -633,6 +641,7 @@
                 
                 // نوێکردنەوەی دوگمەکان
                 prevBtn.disabled = index === 0;
+                nextBtn.disabled = answers[index] === undefined;
                 nextBtn.style.display = index === questions.length - 1 ? 'none' : 'block';
                 submitBtn.style.display = index === questions.length - 1 ? 'block' : 'none';
                 
@@ -648,20 +657,20 @@
                     if (answer !== undefined) {
                         const question = questions[index];
                         const dimension = question.dimension;
-                        const value = question.direction * (answer === "1" ? 1 : -1);
+                        const value = question.direction * parseFloat(answer);
                         
                         if (dimension === "EI") {
                             if (value > 0) counts.E++;
-                            else counts.I++;
+                            else if (value < 0) counts.I++;
                         } else if (dimension === "SN") {
                             if (value > 0) counts.S++;
-                            else counts.N++;
+                            else if (value < 0) counts.N++;
                         } else if (dimension === "TF") {
                             if (value > 0) counts.T++;
-                            else counts.F++;
+                            else if (value < 0) counts.F++;
                         } else if (dimension === "JP") {
                             if (value > 0) counts.J++;
-                            else counts.P++;
+                            else if (value < 0) counts.P++;
                         }
                     }
                 });
@@ -692,10 +701,10 @@
                     'ESTJ': 'کەسێکی ڕێک و پێک و بەڕێوەبەرێکی سروشتی. تۆ کەسێکی بەرپرس و ڕاستگۆیت.',
                     'ISTJ': 'کەسێکی بەرپرس و ڕاستگۆ و پڕ لە وەفاداری. تۆ کەسێکی ڕێک و پێکیت.',
                     'ESFJ': 'کەسێکی میهرەبان و هاوبیر و پشتیوانیکەر. تۆ پەیوەندییەکانت زۆر بایەخ دەدەیت.',
-                    'ISFJ': 'کەسێکی میهرەبان و هاوبیر و پشتیوانیکەر. تۆ پەیوەندییەکانت زۆر بایەخ دەدەیت.',
+                    'ISFJ': 'کەsێکی میهرەبان و هاوبیر و پشتیوانیکەر. تۆ پەیوەندییەکانت زۆر بایەخ دەدەیت.',
                     'ESTP': 'کەسێکی خۆڕایی و کارا و خۆشڤیان. تۆ ئارەزوی مەلەپەرێژی دەکەیت.',
                     'ISTP': 'کەسێکی ڕاهێنراو و سروشتی و چاککردنەوە. تۆ باشترین کار لە دەست دەکەیت.',
-                    'ESFP': 'کەسێکی خۆشڤیان و ڕابەر و سەربەخۆ. تۆ خەڵکی خۆش دەکەیت.',
+                    'ESFP': 'کەسێکی خۆشڤیان و ڕابەr و سەربەخۆ. تۆ خەڵکی خۆش دەکەیت.',
                     'ISFP': 'کەسێکی میهرەبان و هونەرمەند و هاوسەنگ. تۆ جیهان بە جوانی دەبینیت.',
                     'ENFJ': 'کەسێکی ڕابەر و میهرەبان و هاندەر. تۆ دەتوانیت هاندەری خەڵک بیت.',
                     'INFJ': 'کەسێکی قووڵ و هەستجووت و ئیدەالی. تۆ بینێرێکی هەیە بۆ داهاتوو.',
@@ -703,7 +712,7 @@
                     'INFP': 'کەسێکی ئیدەالی و میهرەبان و خەیاڵی. تۆ بەهۆی بەهایەکەوە ڕێت دەگرێت.',
                     'ENTJ': 'کەسێکی بەرپرس و ڕابەر و strategiesی. تۆ باشترین پلانەکان دروست دەکەیت.',
                     'INTJ': 'کەسێکی strategiesی و سەربەخۆ و ڕێک. تۆ بینینێکی درێژخایەنت هەیە.',
-                    'ENTP': 'کەسێکی تێکدەر و ژیر و دەمهێنەر. تۆ حەز بە مشتومڕکردنت هەیە.',
+                    'ENTP': 'کەسێکی تێکدەر و ژیر و دەمهێنەr. تۆ حەز بە مشتومڕکردنت هەیە.',
                     'INTP': 'کەسێکی ژیر و نوێکار و تێکدەر. تۆ حەز بە تێگەیشتن لە سیستەمەکان دەکەیت.'
                 };
                 
@@ -747,6 +756,9 @@
                 
                 // وەڵامەکە تۆماربکە
                 answers[questionIndex] = value;
+                
+                // دوگمەی داهاتوو چالاکبکە
+                nextBtn.disabled = false;
             });
             
             // پێشوو
@@ -768,7 +780,8 @@
             // ناردن
             submitBtn.addEventListener('click', function() {
                 // دڵنیابە لەوەی هەموو پرسیارەکان وهڵامدراونەتەوە
-                if (answers.length < questions.length) {
+                const unanswered = answers.some(answer => answer === undefined);
+                if (unanswered) {
                     alert('تکایە وهڵامی هەموو پرسیارەکان بدەرەوە!');
                     return;
                 }
@@ -800,7 +813,5 @@
             });
         });
     </script>
-
-    
 </body>
-    </html>
+</html>
